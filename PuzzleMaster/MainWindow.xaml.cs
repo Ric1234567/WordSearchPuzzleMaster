@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
 
 namespace PuzzleMaster
 {
@@ -20,7 +23,7 @@ namespace PuzzleMaster
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
 
-    
+
     public partial class MainWindow : Window
     {
         CharGrid gridChar;
@@ -44,7 +47,7 @@ namespace PuzzleMaster
 
             gridChar.initCharGrid();
 
-            
+
             for (int x = 0; x < gridChar.Width; x++)
             {
                 for (int y = 0; y < gridChar.Height; y++)
@@ -52,7 +55,7 @@ namespace PuzzleMaster
                     gridChar.getCharGrid()[x, y] = '_';
                 }
             }
-            
+
 
             //reset
             gridChar.SearchWords.Clear();
@@ -66,7 +69,7 @@ namespace PuzzleMaster
         private void initWordLexicon()
         {
             string path = @"./SearchWords.txt";
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 // Create a file to write to.
                 using (StreamWriter sw = File.CreateText(path))
@@ -79,7 +82,7 @@ namespace PuzzleMaster
                     sw.WriteLine("SUPERMAN");
                 }
             }
-          
+
             //read searchWords from file
             string[] searchWords = System.IO.File.ReadAllLines(path);
             wordLexicon = searchWords.ToList<string>();
@@ -105,8 +108,8 @@ namespace PuzzleMaster
                 MessageBox.Show("Too many SearchWords! Pick less.");
                 return;
             }
-            
-            for(int i = 0; i < gridChar.WordsToSearchCount; i++)
+
+            for (int i = 0; i < gridChar.WordsToSearchCount; i++)
             {
                 //set possible directions from settings
                 List<Direction> directions = new List<Direction>();
@@ -122,11 +125,11 @@ namespace PuzzleMaster
                 {
                     directions.Add(Direction.Left);
                 }
-                if(CheckBoxUpwards.IsChecked == true)
+                if (CheckBoxUpwards.IsChecked == true)
                 {
                     directions.Add(Direction.Up);
                 }
-                if(CheckBoxDiagonalRightDown.IsChecked == true)
+                if (CheckBoxDiagonalRightDown.IsChecked == true)
                 {
                     directions.Add(Direction.Diagonal_Right_Down);
                 }
@@ -145,16 +148,17 @@ namespace PuzzleMaster
 
                 //pick random direction
                 Direction randomDir = (Direction)directions[(r.Next(directions.Count))];
-                
+
                 //pick random word
                 string word = wordLexicon[r.Next(0, wordLexicon.Count)].ToUpper();
-                while (gridChar.SearchWords.Contains(word)){
+                while (gridChar.SearchWords.Contains(word))
+                {
                     word = wordLexicon[r.Next(0, wordLexicon.Count)].ToUpper();
                 }
                 gridChar.SearchWords.Add(word);
 
                 //write in random x, y
-                if(WriteWord(word, randomDir, r.Next(0, gridChar.Width), r.Next(0, gridChar.Height)) < 0 && tries < 1000)
+                if (WriteWord(word, randomDir, r.Next(0, gridChar.Width), r.Next(0, gridChar.Height)) < 0 && tries < 1000)
                 {
                     //das wort konnte nirgends untergebracht werden
                     i--;
@@ -162,7 +166,7 @@ namespace PuzzleMaster
 
                     tries++;
                 }
-                
+
             }
             if (tries >= 100)
             {
@@ -560,7 +564,7 @@ namespace PuzzleMaster
 
                 case Direction.Diagonal_Left_Down:
                     //out of Bound
-                    if (x - word.Length < 0|| y + word.Length > gridChar.Height)
+                    if (x - word.Length < 0 || y + word.Length > gridChar.Height)
                     {
                         return false;
                     }
@@ -625,7 +629,7 @@ namespace PuzzleMaster
 
         private void SpoilerButton_Click(object sender, RoutedEventArgs e)
         {
-            if(lastGridText == null)
+            if (lastGridText == null)
             {
                 MessageBox.Show("Generate puzzle first!");
             }
@@ -657,6 +661,40 @@ namespace PuzzleMaster
         {
             //todo
             throw new NotImplementedException();
+        }
+
+        private void CreatePDFButton_Click(object sender, RoutedEventArgs e)
+        {
+            //pdfsharp
+            PdfDocument doc = new PdfDocument();
+            PdfPage page = doc.AddPage();
+            page.Size = PdfSharp.PageSize.A4;
+
+            //create graphics to draw
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            //gute schriftarten: "Courier New", "Consolas", "Lucida Console"
+            XFont font = new XFont("Lucida Console", 18, XFontStyle.Bold);
+            XTextFormatter tf = new XTextFormatter(gfx);
+
+            //get puzzle text from text Richtextbox
+            TextRange textRange = new TextRange(RichTextBox1.Document.ContentStart, RichTextBox1.Document.ContentEnd);
+            string puzzleText = textRange.Text;
+
+            int margin = 30;
+            //draw text in pdf
+            tf.DrawString(puzzleText, font, XBrushes.Black,
+                new XRect(margin, margin, page.Width - margin, page.Height - margin),
+                XStringFormats.TopLeft);
+            //todo Anpassung der Schriftgröße an die eingegebenen CharGrid größe des erstellten Dokuments
+
+            string filename = "puzzleDoc.pdf";
+
+            //save to hard drive
+            doc.Save(filename);
+
+
+            MessageBox.Show("PDF-file " + filename + " created!");
         }
     }
 }

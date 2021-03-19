@@ -42,7 +42,7 @@ namespace PuzzleMaster
                     }
 
                     //add new line
-                    s += '\n';
+                    s += System.Environment.NewLine;
                 }
 
                 //searchWords
