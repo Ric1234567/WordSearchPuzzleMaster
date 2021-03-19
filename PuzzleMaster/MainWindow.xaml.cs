@@ -644,16 +644,19 @@ namespace PuzzleMaster
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             //todo refresh the loaded lexicon
+            throw new NotImplementedException();
         }
 
         private void MenuItemSaveText_Click(object sender, RoutedEventArgs e)
         {
             //todo
+            throw new NotImplementedException();
         }
 
         private void MenuItemSaveSolution_Click(object sender, RoutedEventArgs e)
         {
             //todo
+            throw new NotImplementedException();
         }
     }
 }
