@@ -112,42 +112,42 @@ namespace PuzzleMaster
             for (int i = 0; i < gridChar.WordsToSearchCount; i++)
             {
                 //set possible directions from settings
-                List<Direction> directions = new List<Direction>();
+                List<Directions> directions = new List<Directions>();
                 if (CheckBoxDownwards.IsChecked == true)
                 {
-                    directions.Add(Direction.Down);
+                    directions.Add(Directions.Down);
                 }
                 if (CheckBoxRightwards.IsChecked == true)
                 {
-                    directions.Add(Direction.Right);
+                    directions.Add(Directions.Right);
                 }
                 if (CheckBoxLeftwards.IsChecked == true)
                 {
-                    directions.Add(Direction.Left);
+                    directions.Add(Directions.Left);
                 }
                 if (CheckBoxUpwards.IsChecked == true)
                 {
-                    directions.Add(Direction.Up);
+                    directions.Add(Directions.Up);
                 }
                 if (CheckBoxDiagonalRightDown.IsChecked == true)
                 {
-                    directions.Add(Direction.Diagonal_Right_Down);
+                    directions.Add(Directions.Diagonal_Right_Down);
                 }
                 if (CheckBoxDiagonalRightUp.IsChecked == true)
                 {
-                    directions.Add(Direction.Diagonal_Right_Up);
+                    directions.Add(Directions.Diagonal_Right_Up);
                 }
                 if (CheckBoxDiagonalLeftDown.IsChecked == true)
                 {
-                    directions.Add(Direction.Diagonal_Left_Down);
+                    directions.Add(Directions.Diagonal_Left_Down);
                 }
                 if (CheckBoxDiagonalLeftUp.IsChecked == true)
                 {
-                    directions.Add(Direction.Diagonal_Left_Up);
+                    directions.Add(Directions.Diagonal_Left_Up);
                 }
 
                 //pick random direction
-                Direction randomDir = (Direction)directions[(r.Next(directions.Count))];
+                Directions randomDir = (Directions)directions[(r.Next(directions.Count))];
 
                 //pick random word
                 string word = wordLexicon[r.Next(0, wordLexicon.Count)].ToUpper();
@@ -193,12 +193,12 @@ namespace PuzzleMaster
             RichTextBox1.Document.Blocks.Add(new Paragraph(new Run(gridChar.GridText)));
         }
 
-        private int WriteWord(string word, Direction dir, int x, int y)
+        private int WriteWord(string word, Directions dir, int x, int y)
         {
             int count = 0;
             switch (dir)
             {
-                case Direction.Right:
+                case Directions.Right:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -220,7 +220,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Left:
+                case Directions.Left:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -242,7 +242,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Down:
+                case Directions.Down:
                     while (!IsSpace(word, dir, x, y))
                     {
                         y = r.Next(0, gridChar.Height);
@@ -264,7 +264,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Up:
+                case Directions.Up:
                     while (!IsSpace(word, dir, x, y))
                     {
                         y = r.Next(0, gridChar.Height);
@@ -287,7 +287,7 @@ namespace PuzzleMaster
                     break;
 
                 //diagonal
-                case Direction.Diagonal_Right_Down:
+                case Directions.Diagonal_Right_Down:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -311,7 +311,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Diagonal_Right_Up:
+                case Directions.Diagonal_Right_Up:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -335,7 +335,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Diagonal_Left_Down:
+                case Directions.Diagonal_Left_Down:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -359,7 +359,7 @@ namespace PuzzleMaster
                     return 1;
                     break;
 
-                case Direction.Diagonal_Left_Up:
+                case Directions.Diagonal_Left_Up:
                     while (!IsSpace(word, dir, x, y))
                     {
                         x = r.Next(0, gridChar.Width);
@@ -388,7 +388,7 @@ namespace PuzzleMaster
             }
         }
 
-        private bool IsSpace(string word, Direction dir, int x, int y)
+        private bool IsSpace(string word, Directions dir, int x, int y)
         {
             //out of bound
             if (x < 0 || y < 0)
@@ -403,7 +403,7 @@ namespace PuzzleMaster
 
             switch (dir)
             {
-                case Direction.Right:
+                case Directions.Right:
                     //out of Bound
                     if (x + word.Length > gridChar.Width)
                     {
@@ -429,7 +429,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Left:
+                case Directions.Left:
                     //out of Bound
                     if (x - word.Length < 0)
                     {
@@ -455,7 +455,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Down:
+                case Directions.Down:
                     //out of Bound
                     if (y + word.Length > gridChar.Height)
                     {
@@ -481,7 +481,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Up:
+                case Directions.Up:
                     //out of Bound
                     if (y - word.Length < 0)
                     {
@@ -508,7 +508,7 @@ namespace PuzzleMaster
                     break;
 
                 //diagonal
-                case Direction.Diagonal_Right_Down:
+                case Directions.Diagonal_Right_Down:
                     //out of Bound
                     if (x + word.Length > gridChar.Width || y + word.Length > gridChar.Height)
                     {
@@ -535,7 +535,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Diagonal_Right_Up:
+                case Directions.Diagonal_Right_Up:
                     //out of Bound
                     if (x + word.Length > gridChar.Width || y - word.Length < 0)
                     {
@@ -562,7 +562,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Diagonal_Left_Down:
+                case Directions.Diagonal_Left_Down:
                     //out of Bound
                     if (x - word.Length < 0 || y + word.Length > gridChar.Height)
                     {
@@ -589,7 +589,7 @@ namespace PuzzleMaster
                     }
                     break;
 
-                case Direction.Diagonal_Left_Up:
+                case Directions.Diagonal_Left_Up:
                     //out of Bound
                     if (x - word.Length < 0 || y - word.Length < 0)
                     {

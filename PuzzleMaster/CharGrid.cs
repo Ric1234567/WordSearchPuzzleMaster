@@ -8,7 +8,7 @@ namespace PuzzleMaster
 {
     class CharGrid
     {
-        
+
         private List<string> searchWords = new List<string>();
         private int wordsToSearchCount = 0;
         private int width = 0;
@@ -64,6 +64,6 @@ namespace PuzzleMaster
             charGrid = new char[this.Width, this.Height];
         }
 
-       
+
     }
 }
