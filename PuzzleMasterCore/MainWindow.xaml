@@ -52,8 +52,8 @@
                 <Label Grid.Row="1" Grid.Column="0" Content="Height" />
                 <Label Grid.Row="2" Grid.Column="0" Content="Search Words" />
 
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Width}" Width="70" HorizontalAlignment="Left"/>
-                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Height}" Width="70" HorizontalAlignment="Left"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding PuzzleWidth}" Width="70" HorizontalAlignment="Left"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding PuzzleHeight}" Width="70" HorizontalAlignment="Left"/>
                 
                 <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal">
                     <TextBox Text="{Binding WordsToSearchCount}" Width="70"/>
@@ -61,7 +61,7 @@
                     <Label Name="LabelSearchWordsMax" Content="{Binding WordsToSearchCountMax}"/>
                 </StackPanel>
 
-                <Button Name="RefreshButton" Grid.Column="2" Grid.Row="2" Content="Refresh" Click="RefreshButton_Click" HorizontalAlignment="Left" Width="43"/>
+                <Button Name="RefreshButton" Grid.Column="2" Grid.Row="2" Content="Refresh" Click="RefreshButton_Click" HorizontalAlignment="Left" />
 
 
                 <GroupBox Header="Searchmodes" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
@@ -76,24 +76,24 @@
 
                         <StackPanel Grid.Column="0">
                             <CheckBox Name="CheckBoxRightwards"  Content="rightwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="True"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.Rightwards}"/>
                             <CheckBox Name="CheckBoxLeftwards"  Content="leftwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="True"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.Leftwards}"/>
                             <CheckBox Name="CheckBoxDownwards" Content="downwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="True"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.Downwards}"/>
                             <CheckBox Name="CheckBoxUpwards" Content="upwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="True"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.Upwards}"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1">
                             <CheckBox Name="CheckBoxDiagonalRightUp" Content="diagonal right upwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="False"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.DiagonalRightUpwards}"/>
                             <CheckBox Name="CheckBoxDiagonalRightDown" Content="diagonal right downwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="False"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.DiagonalRightDownwards}"/>
                             <CheckBox Name="CheckBoxDiagonalLeftUp" Content="diagonal left upwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="False"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.DiagonalLeftUpwards}"/>
                             <CheckBox Name="CheckBoxDiagonalLeftDown" Content="diagonal left downwards"
-                          VerticalAlignment="Center" Margin="8" IsChecked="False"/>
+                          VerticalAlignment="Center" Margin="8" IsChecked="{Binding DirectionSettings.DiagonalLeftDownwards}"/>
 
                         </StackPanel>
                     </Grid>
