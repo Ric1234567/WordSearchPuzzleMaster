@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PuzzleMasterCore"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Search Puzzle Master" Height="450" Width="800">
     <Grid Background="WhiteSmoke">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -114,14 +114,14 @@
 
             <Button Grid.Column="1" Grid.Row="0" 
                 Name="SpoilerButton"
-                MinWidth="80" MinHeight="25" 
+                MinWidth="75" MinHeight="20" 
                 MaxWidth="120" MaxHeight="50"
                 Content="Spoiler Solution"
                 Click="SpoilerButton_Click"
                     Margin="6"/>
 
             <Button Grid.Column="0" Grid.Row="1" 
-                MinWidth="80" MinHeight="30" 
+                MinWidth="75" MinHeight="20" 
                 MaxWidth="120" MaxHeight="50"
                 Content="Copy Text"
                 Click="CopyTextButton_Click"
@@ -129,7 +129,7 @@
 
             <Button Grid.Column="1" Grid.Row="1" 
                 Name="GenerateButton"
-                MinWidth="80" MinHeight="30" 
+                MinWidth="75" MinHeight="20" 
                 MaxWidth="120" MaxHeight="50"
                 Content="Generate Puzzle"
                 Click="GenerateButton_Click"
