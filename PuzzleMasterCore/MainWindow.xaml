@@ -31,7 +31,7 @@
         </Menu>
 
         <TextBox Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
-                 Name="TextBox1" Text="{Binding SearchPuzzle.PuzzleCharGrid.Textstring, Mode=OneWay}" FontFamily="Lucida Console"/>
+                 Name="TextBox1" Text="{Binding SearchPuzzle.PuzzleString, Mode=OneWay}" FontFamily="Lucida Console"/>
 
         <GroupBox Header="Settings"
                   Grid.Column="1" Grid.Row="1" >

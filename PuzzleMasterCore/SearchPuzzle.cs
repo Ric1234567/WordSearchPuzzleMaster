@@ -20,6 +20,7 @@ namespace PuzzleMasterCore
         private int puzzleHeight = 30;
         private CharGrid puzzleCharGrid;
         private CharGrid solutionCharGrid;
+
         private List<string> wordLexicon = new List<string>();
         private List<string> searchWords = new List<string>();
         private int wordsToSearchCount = 0;
@@ -91,15 +92,20 @@ namespace PuzzleMasterCore
                 OnPropertyChanged(nameof(PuzzleHeight));
             }
         }
-
         public DirectionSettings DirectionSettings
         {
             get { return directionSettings; }
-            //set
-            //{
-            //    directionSettings = value;
-            //    OnPropertyChanged(nameof(DirectionSettings));
-            //}
+        }
+        /// <summary>
+        /// Returns the output of the puzzleGeneration as string including the words to search.
+        /// </summary>
+        public string PuzzleString
+        {
+            get
+            {
+                this.SearchWords.Sort();
+                return this.PuzzleCharGrid.Textstring + System.Environment.NewLine + string.Join(",", this.SearchWords);
+            }
         }
         #endregion
 
@@ -195,45 +201,52 @@ namespace PuzzleMasterCore
         /// <returns></returns>
         public void GeneratePuzzle()
         {
+            //Resets
             this.PuzzleCharGrid = new CharGrid(this.PuzzleWidth, this.PuzzleHeight);
             this.PuzzleCharGrid.ResetGrid();
+            this.SearchWords.Clear();
 
             int tries = 0;
 
             //only max
             if (WordsToSearchCount > WordLexicon.Count)
             {
-                MessageBox.Show("Too many SearchWords! Pick less.");
+                MessageBox.Show("Too many SearchWords! Pick less.", MainWindow.WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            //copy words for this puzzle
+            List<string> tempLexicon = new List<string>(WordLexicon);
 
             for (int i = 0; i < WordsToSearchCount; i++)
             {
                 //pick random direction
                 Directions randomDir = this.PickRandomDirection();
 
-                //pick random word
-                string word = WordLexicon[r.Next(0, WordLexicon.Count)].ToUpper();
-                while (SearchWords.Contains(word))
+                if (tempLexicon.Count > 0)//todo in seltenen fällen kann er wegen der tries (weiter unten hier) nicht alle wörter unterbringen
                 {
-                    word = WordLexicon[r.Next(0, WordLexicon.Count)].ToUpper();//todo endlos?
+                    //pick random word
+                    string word = tempLexicon[r.Next(0, tempLexicon.Count)];
+
+                    //remove to prevent the same words multiple times
+                    tempLexicon.Remove(word);
+                    word = word.ToUpper();
+                    SearchWords.Add(word);
+
+                    //write in random x, y
+                    if (PuzzleCharGrid.WriteWord(word, randomDir, r.Next(0, PuzzleCharGrid.Width), r.Next(0, PuzzleCharGrid.Height)) < 0 && tries < 1000)
+                    {
+                        //das wort konnte nirgends untergebracht werden
+                        i--;
+                        SearchWords.Remove(word);
+
+                        tries++;
+                    }
                 }
-                SearchWords.Add(word);
-
-                //write in random x, y
-                if (PuzzleCharGrid.WriteWord(word, randomDir, r.Next(0, PuzzleCharGrid.Width), r.Next(0, PuzzleCharGrid.Height)) < 0 && tries < 1000)
-                {
-                    //das wort konnte nirgends untergebracht werden
-                    i--;
-                    SearchWords.Remove(word);
-
-                    tries++;
-                }
-
             }
             if (tries >= 100)
             {
-                MessageBox.Show("Could not generate puzzle! Change your Settings.");
+                MessageBox.Show("Could not generate puzzle! Change your Settings.", MainWindow.WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -243,6 +256,8 @@ namespace PuzzleMasterCore
 
             //set rest of search grid to random chars
             this.PuzzleCharGrid.SetEmptyToRandom();
+
+            OnPropertyChanged(nameof(PuzzleString));
         }
 
         private void OnPropertyChanged(string propertyName)

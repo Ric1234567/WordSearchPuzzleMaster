@@ -16,7 +16,7 @@ namespace PuzzleMasterCore
         private int width = 0;
         private int height = 0;
         private char[,] charGrid;
-        private Random r = new Random();
+        private Random random = new Random();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -139,7 +139,7 @@ namespace PuzzleMasterCore
                 case Directions.Right:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
+                        x = random.Next(0, this.Width);
 
                         //stopping condition
                         count++;
@@ -161,7 +161,7 @@ namespace PuzzleMasterCore
                 case Directions.Left:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
+                        x = random.Next(0, this.Width);
 
                         //stopping condition
                         count++;
@@ -183,7 +183,7 @@ namespace PuzzleMasterCore
                 case Directions.Down:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        y = r.Next(0, this.Height);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -205,7 +205,7 @@ namespace PuzzleMasterCore
                 case Directions.Up:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        y = r.Next(0, this.Height);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -228,8 +228,8 @@ namespace PuzzleMasterCore
                 case Directions.Diagonal_Right_Down:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
-                        y = r.Next(0, this.Height);
+                        x = random.Next(0, this.Width);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -252,8 +252,8 @@ namespace PuzzleMasterCore
                 case Directions.Diagonal_Right_Up:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
-                        y = r.Next(0, this.Height);
+                        x = random.Next(0, this.Width);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -276,8 +276,8 @@ namespace PuzzleMasterCore
                 case Directions.Diagonal_Left_Down:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
-                        y = r.Next(0, this.Height);
+                        x = random.Next(0, this.Width);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -300,8 +300,8 @@ namespace PuzzleMasterCore
                 case Directions.Diagonal_Left_Up:
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = r.Next(0, this.Width);
-                        y = r.Next(0, this.Height);
+                        x = random.Next(0, this.Width);
+                        y = random.Next(0, this.Height);
 
                         //stopping condition
                         count++;
@@ -562,7 +562,7 @@ namespace PuzzleMasterCore
 
         public char RandomChar()
         {
-            return (char)r.Next(65, 90);
+            return (char)random.Next(65, 90);
         }
 
         public void OnPropertyChanged(string propertyName)

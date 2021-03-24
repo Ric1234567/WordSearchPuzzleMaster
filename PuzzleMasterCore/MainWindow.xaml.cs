@@ -24,7 +24,7 @@ namespace PuzzleMasterCore
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string WINDOW_NAME = "Search Puzzle Master";
+        public const string WINDOW_NAME = "Search Puzzle Master";
 
         private SearchPuzzle searchPuzzle = new SearchPuzzle();
 
@@ -50,18 +50,18 @@ namespace PuzzleMasterCore
 
         private void CopyTextButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(this.SearchPuzzle.PuzzleCharGrid.Textstring);
+            Clipboard.SetText(this.SearchPuzzle.PuzzleString);
         }
 
         private void SpoilerButton_Click(object sender, RoutedEventArgs e)
         {
             if (SearchPuzzle.PuzzleSolution == null || SearchPuzzle.PuzzleSolution.Textstring == null)
             {
-                MessageBox.Show("Generate puzzle first!");
+                MessageBox.Show("Generate puzzle first!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-                MessageBox.Show(this.SearchPuzzle.PuzzleSolution.Textstring, "My App", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(this.SearchPuzzle.PuzzleSolution.Textstring, WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.None);
             }
         }
 
@@ -77,13 +77,13 @@ namespace PuzzleMasterCore
 
         private void MenuItemSaveText_Click(object sender, RoutedEventArgs e)
         {
-            //todo
+            //todo save text
             throw new NotImplementedException();
         }
 
         private void MenuItemSaveSolution_Click(object sender, RoutedEventArgs e)
         {
-            //todo
+            //todo save solution
             throw new NotImplementedException();
         }
 
