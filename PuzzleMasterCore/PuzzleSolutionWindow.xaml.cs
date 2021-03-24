@@ -22,9 +22,6 @@ namespace PuzzleMasterCore
 
         public event PropertyChangedEventHandler PropertyChanged;
 
- 
-
-
         public static void ShowNotification(string title, string message)
         {
             PuzzleSolutionDialog dialog = new PuzzleSolutionDialog();

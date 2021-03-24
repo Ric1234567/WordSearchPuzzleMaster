@@ -75,7 +75,7 @@ namespace PuzzleMasterCore
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            SearchPuzzle.WordLexicon = SearchPuzzle.RefreshWordLexicon();
+            SearchPuzzle.LoadWordLexicon();
         }
 
         private void MenuItemSaveText_Click(object sender, RoutedEventArgs e)

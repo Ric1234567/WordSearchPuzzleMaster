@@ -124,28 +124,36 @@ namespace PuzzleMasterCore
         }
 
         /// <summary>
-        /// Writes a word in the grid
+        /// Inserts a word at a random position in the grid
         /// </summary>
         /// <param name="word"></param>
         /// <param name="dir"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         /// <returns></returns>
-        public int WriteWord(string word, Directions dir, int x, int y)
+        public bool InsertWordAtRandomPosition(string word, Directions dir)
         {
             int count = 0;
+            int x;
+            int y;
+
             switch (dir)
             {
                 case Directions.Right:
+                    //pick random position for this direction
+                    x = random.Next(this.Width - word.Length + 1);
+                    y = random.Next(this.Height);
+
+                    //check for space (or blocked by other words etc.)
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
+                        //pick new random position
+                        x = random.Next(this.Width - word.Length + 1);
+                        y = random.Next(this.Height);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -155,19 +163,24 @@ namespace PuzzleMasterCore
                         this.CharacterGrid[x, y] = word[i];
                         x++;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Left:
+                    //pick random position for this direction
+                    x = random.Next(word.Length - 1, this.Width);
+                    y = random.Next(this.Height);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
+                        //pick new random position
+                        x = random.Next(word.Length - 1, this.Width);
+                        y = random.Next(this.Height);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -177,19 +190,24 @@ namespace PuzzleMasterCore
                         this.CharacterGrid[x, y] = word[i];
                         x--;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Down:
+                    //pick random position for this direction
+                    x = random.Next(this.Width);
+                    y = random.Next(this.Height - word.Length + 1);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(this.Width);
+                        y = random.Next(this.Height - word.Length + 1);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -199,19 +217,24 @@ namespace PuzzleMasterCore
                         this.CharacterGrid[x, y] = word[i];
                         y++;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Up:
+                    //pick random position for this direction
+                    x = random.Next(this.Width);
+                    y = random.Next(word.Length - 1, this.Height);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(this.Width);
+                        y = random.Next(word.Length - 1, this.Height);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -221,21 +244,25 @@ namespace PuzzleMasterCore
                         this.CharacterGrid[x, y] = word[i];
                         y--;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 //diagonal
                 case Directions.Diagonal_Right_Down:
+                    //pick random position for this direction
+                    x = random.Next(this.Width - word.Length + 1);
+                    y = random.Next(this.Height - word.Length + 1);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(this.Width - word.Length + 1);
+                        y = random.Next(this.Height - word.Length + 1);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -246,20 +273,24 @@ namespace PuzzleMasterCore
                         x++;
                         y++;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Diagonal_Right_Up:
+                    //pick random position for this direction
+                    x = random.Next(this.Width - word.Length);
+                    y = random.Next(word.Length - 1, this.Height);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(this.Width - word.Length);
+                        y = random.Next(word.Length - 1, this.Height);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -270,20 +301,24 @@ namespace PuzzleMasterCore
                         x++;
                         y--;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Diagonal_Left_Down:
+                    //pick random position for this direction
+                    x = random.Next(word.Length - 1, this.Width);
+                    y = random.Next(this.Height - word.Length);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(word.Length - 1, this.Width);
+                        y = random.Next(this.Height - word.Length);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -294,20 +329,24 @@ namespace PuzzleMasterCore
                         x--;
                         y++;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 case Directions.Diagonal_Left_Up:
+                    //pick random position for this direction
+                    x = random.Next(word.Length - 1, this.Width);
+                    y = random.Next(word.Length - 1, this.Height);
+
                     while (!IsSpace(word, dir, x, y))
                     {
-                        x = random.Next(0, this.Width);
-                        y = random.Next(0, this.Height);
+                        //pick new random position
+                        x = random.Next(word.Length - 1, this.Width);
+                        y = random.Next(word.Length - 1, this.Height);
 
                         //stopping condition
                         count++;
                         if (count > 100)
                         {
-                            return -1;
+                            return false;
                         }
                     }
 
@@ -318,11 +357,10 @@ namespace PuzzleMasterCore
                         x--;
                         y--;
                     }
-                    return 1;
-                    break;
+                    return true;
 
                 default:
-                    return -1;
+                    return false;
             }
         }
 
@@ -369,7 +407,7 @@ namespace PuzzleMasterCore
 
                 case Directions.Left:
                     //out of Bound
-                    if (x - word.Length < 0)
+                    if (x - word.Length + 1 < 0)
                     {
                         return false;
                     }
@@ -386,7 +424,7 @@ namespace PuzzleMasterCore
                         }
 
                         x--;
-                        if (x < 0)
+                        if (x + 1 < 0)
                         {
                             return false;
                         }
@@ -421,7 +459,7 @@ namespace PuzzleMasterCore
 
                 case Directions.Up:
                     //out of Bound
-                    if (y - word.Length < 0)
+                    if (y - word.Length + 1 < 0)
                     {
                         return false;
                     }
@@ -438,7 +476,7 @@ namespace PuzzleMasterCore
                         }
 
                         y--;
-                        if (y < 0)
+                        if (y + 1 < 0)
                         {
                             return false;
                         }
@@ -475,7 +513,7 @@ namespace PuzzleMasterCore
 
                 case Directions.Diagonal_Right_Up:
                     //out of Bound
-                    if (x + word.Length > this.Width || y - word.Length < 0)
+                    if (x + word.Length > this.Width || y - word.Length + 1 < 0)
                     {
                         return false;
                     }
@@ -493,7 +531,7 @@ namespace PuzzleMasterCore
 
                         y--;
                         x++;
-                        if (x > this.Width || y < 0)
+                        if (x > this.Width || y + 1 < 0)
                         {
                             return false;
                         }
@@ -502,7 +540,7 @@ namespace PuzzleMasterCore
 
                 case Directions.Diagonal_Left_Down:
                     //out of Bound
-                    if (x - word.Length < 0 || y + word.Length > this.Height)
+                    if (x + 1 - word.Length < 0 || y + word.Length > this.Height)
                     {
                         return false;
                     }
@@ -520,7 +558,7 @@ namespace PuzzleMasterCore
 
                         y++;
                         x--;
-                        if (x < 0 || y > this.Height)
+                        if (x + 1 < 0 || y > this.Height)
                         {
                             return false;
                         }
@@ -529,7 +567,7 @@ namespace PuzzleMasterCore
 
                 case Directions.Diagonal_Left_Up:
                     //out of Bound
-                    if (x - word.Length < 0 || y - word.Length < 0)
+                    if (x - word.Length + 1 < 0 || y - word.Length + 1 < 0)
                     {
                         return false;
                     }
@@ -547,7 +585,7 @@ namespace PuzzleMasterCore
 
                         y--;
                         x--;
-                        if (x < 0 || y < 0)
+                        if (x + 1 < 0 || y + 1 < 0)
                         {
                             return false;
                         }

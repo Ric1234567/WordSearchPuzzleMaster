@@ -21,19 +21,19 @@ namespace PuzzleMasterCore
         private CharGrid puzzleCharGrid;
         private CharGrid solutionCharGrid;
 
-        private List<string> wordLexicon = new List<string>();
-        private List<string> searchWords = new List<string>();
+        private List<string> wordLexicon;
+        private List<string> searchWords = new List<string>();//needed
         private int wordsToSearchCount = 0;
 
         DirectionSettings directionSettings = new DirectionSettings();
 
-        private Random r = new Random();//todo optimiern mit CharGrid
+        private Random random = new Random();//todo optimiern mit CharGrid
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public SearchPuzzle()
         {
-            InitWordLexicon();
+            LoadWordLexicon();
             this.PuzzleCharGrid = new CharGrid(this.PuzzleWidth, this.PuzzleHeight);
         }
 
@@ -112,7 +112,7 @@ namespace PuzzleMasterCore
         /// <summary>
         /// Creates and/or reads a list of words from a txt-file in the same folder as the exe
         /// </summary>
-        private void InitWordLexicon()
+        public void LoadWordLexicon()
         {
             if (!File.Exists(SEARCH_WORDS_PATH))
             {
@@ -126,14 +126,18 @@ namespace PuzzleMasterCore
                     sw.WriteLine("COMPUTER");
                     sw.WriteLine("HANDLANGER");
                     sw.WriteLine("SUPERMAN");
+                    sw.WriteLine("LAGER");
+                    sw.WriteLine("LAGERREGAL");
+                    sw.WriteLine("REGAL");
+                    sw.WriteLine("BAUMHAUS");
                 }
             }
 
             //read searchWords from file and add to the lexicon of the puzzle
-            this.WordLexicon.AddRange(ReadSearchWordsFromFile(SEARCH_WORDS_PATH));
+            this.WordLexicon = new List<string>(ReadSearchWordsFromFile(SEARCH_WORDS_PATH));
 
             //default words to search
-            this.WordsToSearchCount = 6;
+            this.WordsToSearchCount = this.WordsToSearchCountMax;
         }
 
         /// <summary>
@@ -143,15 +147,21 @@ namespace PuzzleMasterCore
         /// <returns>List with words</returns>
         private List<string> ReadSearchWordsFromFile(string path)
         {
-            return System.IO.File.ReadAllLines(path).ToList<string>();
+            List<string> words = System.IO.File.ReadAllLines(path).ToList<string>();
+
+            //remove null or empty strings
+            words = words.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+
+            return words;
         }
 
         /// <summary>
         /// Refreshes the WordLexicon by reading the file
         /// </summary>
         /// <returns>WordLexicon which contains possible words for the puzzle</returns>
-        public List<string> RefreshWordLexicon()
+        private List<string> RefreshWordLexicon()
         {
+            LoadWordLexicon();
             return this.ReadSearchWordsFromFile(SEARCH_WORDS_PATH);
         }
 
@@ -192,7 +202,7 @@ namespace PuzzleMasterCore
         /// <returns></returns>
         private Directions PickRandomDirection()
         {
-            return this.DirectionSettings.SelectedDirections[r.Next(this.DirectionSettings.SelectedDirections.Count)];
+            return this.DirectionSettings.SelectedDirections[random.Next(this.DirectionSettings.SelectedDirections.Count)];
         }
 
         /// <summary>
@@ -223,24 +233,32 @@ namespace PuzzleMasterCore
                 //pick random direction
                 Directions randomDir = this.PickRandomDirection();
 
-                if (tempLexicon.Count > 0)//todo in seltenen fällen kann er wegen der tries (weiter unten hier) nicht alle wörter unterbringen
+                if (tempLexicon.Count > 0)
                 {
                     //pick random word
-                    string word = tempLexicon[r.Next(0, tempLexicon.Count)];
+                    string word = tempLexicon[random.Next(0, tempLexicon.Count)];
 
-                    //remove to prevent the same words multiple times
+                    //remove word in both cases
                     tempLexicon.Remove(word);
-                    word = word.ToUpper();
-                    SearchWords.Add(word);
-
-                    //write in random x, y
-                    if (PuzzleCharGrid.WriteWord(word, randomDir, r.Next(0, PuzzleCharGrid.Width), r.Next(0, PuzzleCharGrid.Height)) < 0 && tries < 1000)
+                    if (word.Length > this.PuzzleWidth || word.Length > this.PuzzleHeight)
                     {
-                        //das wort konnte nirgends untergebracht werden
-                        i--;
-                        SearchWords.Remove(word);
+                        MessageBox.Show("\"" + word + "\" is too long for the size of this puzzle! It will not be used.", MainWindow.WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                    else
+                    {
+                        //remove to prevent the same words multiple times
+                        word = word.ToUpper();
+                        SearchWords.Add(word);
 
-                        tries++;
+                        //write in random x, y
+                        if (!PuzzleCharGrid.InsertWordAtRandomPosition(word, randomDir) && tries < 1000)
+                        {
+                            //das wort konnte nirgends untergebracht werden
+                            i--;
+                            SearchWords.Remove(word);
+
+                            tries++;
+                        }
                     }
                 }
             }

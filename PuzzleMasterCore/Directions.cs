@@ -16,6 +16,5 @@ namespace PuzzleMasterCore
         Diagonal_Right_Up,
         Diagonal_Left_Down,
         Diagonal_Left_Up
-            ///TODO upleft etc.
     }
 }
