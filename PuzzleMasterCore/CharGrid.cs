@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace PuzzleMasterCore
 {
-    public class CharGrid : INotifyPropertyChanged, ICloneable
+    public class CharGrid : INotifyPropertyChanged
     {
         private int width = 0;
         private int height = 0;
@@ -54,7 +58,7 @@ namespace PuzzleMasterCore
             {
                 string s = "";
 
-                //grid
+                //iterate grid array
                 for (int y = 0; y < this.Height; y++)
                 {
                     for (int x = 0; x < this.Width; x++)
@@ -70,17 +74,38 @@ namespace PuzzleMasterCore
             }
         }
 
-        public char[,] CharacterGrid { get => charGrid; set => charGrid = value; }
+        public char[,] CharacterGrid
+        {
+            get { return charGrid; }
+            set
+            {
+                charGrid = value;
+                OnPropertyChanged(nameof(CharacterGrid));
+            }
+        }
         #endregion
 
-        public void SetChar(int x, int y, char c)
+        /// <summary>
+        /// Sets all "_" in the grid to random chars
+        /// </summary>
+        public void SetEmptyToRandom()
         {
-            this.CharacterGrid[x, y] = c;
+            for (int x = 0; x < this.Width; x++)
+            {
+                for (int y = 0; y < this.Height; y++)
+                {
+                    if (this.CharacterGrid[x, y] == '_')
+                    {
+                        this.CharacterGrid[x, y] = this.RandomChar();
+                    }
+                }
+            }
+            OnPropertyChanged(nameof(Textstring));
         }
 
         public void InitCharGrid()
         {
-            CharacterGrid = new char[this.Width, this.Height];
+            this.CharacterGrid = new char[this.Width, this.Height];
         }
 
         /// <summary>
@@ -540,14 +565,9 @@ namespace PuzzleMasterCore
             return (char)r.Next(65, 90);
         }
 
-        private void OnPropertyChanged(string propertyName)
+        public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
         }
     }
 }

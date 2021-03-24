@@ -24,12 +24,18 @@ namespace PuzzleMasterCore
     /// </summary>
     public partial class MainWindow : Window
     {
-        SearchPuzzle searchPuzzle = new SearchPuzzle();
+        const string WINDOW_NAME = "Search Puzzle Master";
+
+        private SearchPuzzle searchPuzzle = new SearchPuzzle();
+
+        #region props
+        public SearchPuzzle SearchPuzzle { get => searchPuzzle; set => searchPuzzle = value; }
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = searchPuzzle;
+            this.DataContext = this;
         }
 
         /// <summary>
@@ -39,28 +45,23 @@ namespace PuzzleMasterCore
         /// <param name="e"></param>
         private void GenerateButton_Click(object sender, RoutedEventArgs e)
         {
-            searchPuzzle.GeneratePuzzle();
-
-            //set to text box//todo binding textbox
-            RichTextBox1.Document.Blocks.Clear();
-            RichTextBox1.Document.Blocks.Add(new Paragraph(new Run(searchPuzzle.PuzzleCharGrid.Textstring)));
+            SearchPuzzle.GeneratePuzzle();
         }
 
         private void CopyTextButton_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(new TextRange(RichTextBox1.Document.ContentStart, RichTextBox1.Document.ContentEnd).Text);
+            Clipboard.SetText(this.SearchPuzzle.PuzzleCharGrid.Textstring);
         }
 
         private void SpoilerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (searchPuzzle.PuzzleSolution.Textstring == null)
+            if (SearchPuzzle.PuzzleSolution == null || SearchPuzzle.PuzzleSolution.Textstring == null)
             {
                 MessageBox.Show("Generate puzzle first!");
             }
             else
             {
-                RichTextBox1.Document.Blocks.Clear();
-                RichTextBox1.Document.Blocks.Add(new Paragraph(new Run(searchPuzzle.PuzzleSolution.Textstring)));
+                MessageBox.Show(this.SearchPuzzle.PuzzleSolution.Textstring, "My App", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -71,7 +72,7 @@ namespace PuzzleMasterCore
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            searchPuzzle.WordLexicon = searchPuzzle.RefreshWordLexicon();
+            SearchPuzzle.WordLexicon = SearchPuzzle.RefreshWordLexicon();
         }
 
         private void MenuItemSaveText_Click(object sender, RoutedEventArgs e)
@@ -90,9 +91,9 @@ namespace PuzzleMasterCore
         {
             const string filename = "puzzleDoc.pdf";
 
-            searchPuzzle.CreatePDFFile(filename);
+            SearchPuzzle.CreatePDFFile(filename);
 
-            MessageBox.Show("PDF-file " + filename + " created!");
+            MessageBox.Show("PDF-file in \"" + filename + "\" created!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 

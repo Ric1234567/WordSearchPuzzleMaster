@@ -12,7 +12,7 @@ using System.Windows.Documents;
 
 namespace PuzzleMasterCore
 {
-    class SearchPuzzle : INotifyPropertyChanged
+    public class SearchPuzzle : INotifyPropertyChanged
     {
         const string SEARCH_WORDS_PATH = @"./SearchWords.txt";
 
@@ -33,10 +33,19 @@ namespace PuzzleMasterCore
         public SearchPuzzle()
         {
             InitWordLexicon();
+            this.PuzzleCharGrid = new CharGrid(this.PuzzleWidth, this.PuzzleHeight);
         }
 
         #region props
-        public CharGrid PuzzleCharGrid { get => puzzleCharGrid; set => puzzleCharGrid = value; }
+        public CharGrid PuzzleCharGrid
+        {
+            get { return puzzleCharGrid; }
+            set
+            {
+                puzzleCharGrid = value;
+                OnPropertyChanged(nameof(PuzzleCharGrid));
+            }
+        }
         public CharGrid PuzzleSolution { get => solutionCharGrid; set => solutionCharGrid = value; }
         public int WordsToSearchCount
         {
@@ -233,16 +242,7 @@ namespace PuzzleMasterCore
             this.PuzzleSolution.CharacterGrid = (char[,])this.PuzzleCharGrid.CharacterGrid.Clone();
 
             //set rest of search grid to random chars
-            for (int x = 0; x < PuzzleCharGrid.Width; x++)
-            {
-                for (int y = 0; y < PuzzleCharGrid.Height; y++)
-                {
-                    if (PuzzleCharGrid.CharacterGrid[x, y] == '_')
-                    {
-                        PuzzleCharGrid.SetChar(x, y, PuzzleCharGrid.RandomChar());
-                    }
-                }
-            }
+            this.PuzzleCharGrid.SetEmptyToRandom();
         }
 
         private void OnPropertyChanged(string propertyName)

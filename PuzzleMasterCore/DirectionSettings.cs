@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PuzzleMasterCore
 {
-    class DirectionSettings : INotifyPropertyChanged
+    public class DirectionSettings : INotifyPropertyChanged
     {
         private bool rightwards = true;
         private bool leftwards = true;
