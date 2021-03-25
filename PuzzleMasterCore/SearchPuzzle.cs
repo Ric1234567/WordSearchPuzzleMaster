@@ -97,6 +97,7 @@ namespace PuzzleMasterCore
         {
             get { return directionSettings; }
         }
+
         /// <summary>
         /// Returns the output of the puzzleGeneration as string including the words to search.
         /// </summary>
@@ -105,7 +106,7 @@ namespace PuzzleMasterCore
             get
             {
                 this.SearchWords.Sort();
-                return this.PuzzleCharGrid.Textstring + System.Environment.NewLine + string.Join(",", this.SearchWords);
+                return this.PuzzleCharGrid.Textstring + System.Environment.NewLine + string.Join(", ", this.SearchWords);
             }
         }
         #endregion
@@ -177,45 +178,69 @@ namespace PuzzleMasterCore
             PdfPage page = doc.AddPage();
             page.Size = PdfSharpCore.PageSize.A4;
 
-            //calc font size
+            //create graphics to draw
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            //inits search word box
+            double searchWordsFontSize = 12;
+            this.SearchWords.Sort();
+            string searchWordsString = string.Join(", ", this.SearchWords);
+            XFont searchWordsFont = new XFont("Lucida Console", searchWordsFontSize, XFontStyle.Bold);
+
             XUnit MIN_PAGE_MARGIN = XUnit.FromMillimeter(11);
             XUnit SPACE_BETWEEN_CHARS = XUnit.FromMillimeter(0);//not needed
 
+            //max printable size of current page size
+            XUnit maxPrintablePageWidth = page.Width - 2 * MIN_PAGE_MARGIN;
+            XUnit maxPrintablePageHeight = page.Height - 2 * MIN_PAGE_MARGIN;
+
+            //measure search word string rows to fit page
+            XSize size = gfx.MeasureString(searchWordsString, searchWordsFont);
+            int searchWordsRows = (int)Math.Ceiling(size.Width / maxPrintablePageWidth);
+
+            //to place puzzle after searchwords box
+            XUnit puzzleCoordY = XUnit.FromPoint(MIN_PAGE_MARGIN + searchWordsFontSize * searchWordsRows);
+
+            ///char grid
             //height
-            XUnit puzzleSpaceHeight = page.Height - 2 * MIN_PAGE_MARGIN;//max printable space for page
-            XUnit totalCharSpaceHeight = puzzleSpaceHeight - SPACE_BETWEEN_CHARS * (this.PuzzleHeight - 1);
-            XUnit maxCharHeight = totalCharSpaceHeight / this.PuzzleHeight;
+            XUnit totalCharGridSpaceHeight = maxPrintablePageHeight - SPACE_BETWEEN_CHARS * (this.PuzzleHeight - 1) - puzzleCoordY;
+            XUnit maxCharHeight = totalCharGridSpaceHeight / this.PuzzleHeight;
             //width
-            XUnit puzzleSpaceWidth = page.Width - 2 * MIN_PAGE_MARGIN;//max printable space for page
-            XUnit totalCharSpaceWidth = puzzleSpaceWidth - SPACE_BETWEEN_CHARS * (this.PuzzleWidth - 1);
-            XUnit maxCharWidth = totalCharSpaceWidth / this.PuzzleWidth;
+            XUnit totalCharGridSpaceWidth = maxPrintablePageWidth - SPACE_BETWEEN_CHARS * (this.PuzzleWidth - 1);
+            XUnit maxCharWidth = totalCharGridSpaceWidth / this.PuzzleWidth;
 
-            //use smaller one to create a square for each char to fit the overall page size
-            XUnit squareSize = Math.Min(maxCharHeight, maxCharWidth);
-            double fontSize = squareSize.Point;
+            //use smaller size to create a square for each char to fit the overall page size
+            XUnit charSquareSize = Math.Min(maxCharHeight, maxCharWidth);
+            double fontSize = charSquareSize.Point;
 
-            //create graphics to draw
-            XGraphics gfx = XGraphics.FromPdfPage(page);
+            
             //nice fonts: "Courier New", "Consolas", "Lucida Console"
-            XFont font = new XFont("Lucida Console", fontSize, XFontStyle.Bold);
+            XFont charGridFont = new XFont("Lucida Console", fontSize, XFontStyle.Bold);
             XTextFormatter tf = new XTextFormatter(gfx);
 
+            //draw search words and box
+            tf.Alignment = XParagraphAlignment.Left;
+            XRect rect = new XRect(MIN_PAGE_MARGIN, MIN_PAGE_MARGIN, maxPrintablePageWidth, searchWordsFontSize * searchWordsRows);
+            gfx.DrawRectangle(XBrushes.LightGray, rect);
+            gfx.DrawRectangle(XPens.Black, rect);
+            tf.DrawString(searchWordsString, searchWordsFont, XBrushes.Black, rect);
 
-            //draw borders of puzzle
-            gfx.DrawRectangle(XPens.Black, MIN_PAGE_MARGIN, MIN_PAGE_MARGIN, squareSize * this.PuzzleWidth, squareSize * this.PuzzleHeight);//used size of the puzzle
 
+            //draw borders of char grid
+            gfx.DrawRectangle(XPens.Black, MIN_PAGE_MARGIN, puzzleCoordY, charSquareSize * this.PuzzleWidth, charSquareSize * this.PuzzleHeight);//used size of the puzzle
+
+            tf.Alignment = XParagraphAlignment.Center;
             //draw chars of grid
             for (int y = 0; y < this.PuzzleHeight; y++)
             {
                 for (int x = 0; x < this.PuzzleWidth; x++)
                 {
-                    double xCoord = MIN_PAGE_MARGIN + x * (squareSize + SPACE_BETWEEN_CHARS);
-                    double yCoord = MIN_PAGE_MARGIN + y * (squareSize + SPACE_BETWEEN_CHARS);
+                    double xCoord = MIN_PAGE_MARGIN + x * (charSquareSize + SPACE_BETWEEN_CHARS);
+                    double yCoord = puzzleCoordY + y * (charSquareSize + SPACE_BETWEEN_CHARS);
 
-                    tf.DrawString(this.PuzzleCharGrid.CharacterGrid[x, y].ToString(), font, XBrushes.Black,
+                    tf.DrawString(this.PuzzleCharGrid.CharacterGrid[x, y].ToString(), charGridFont, XBrushes.Black,
                         new XRect(xCoord, yCoord,
-                        maxCharWidth, maxCharHeight),
-                        XStringFormats.TopLeft);//todo center when implemented in lib
+                        maxCharWidth, maxCharHeight));
                 }
             }
 
