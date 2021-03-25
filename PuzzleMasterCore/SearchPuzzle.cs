@@ -4,6 +4,7 @@ using PdfSharpCore.Pdf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -176,24 +177,50 @@ namespace PuzzleMasterCore
             PdfPage page = doc.AddPage();
             page.Size = PdfSharpCore.PageSize.A4;
 
+            //calc font size
+            XUnit MIN_PAGE_MARGIN = XUnit.FromMillimeter(11);
+            XUnit SPACE_BETWEEN_CHARS = XUnit.FromMillimeter(0);//not needed
+
+            //height
+            XUnit puzzleSpaceHeight = page.Height - 2 * MIN_PAGE_MARGIN;//max printable space for page
+            XUnit totalCharSpaceHeight = puzzleSpaceHeight - SPACE_BETWEEN_CHARS * (this.PuzzleHeight - 1);
+            XUnit maxCharHeight = totalCharSpaceHeight / this.PuzzleHeight;
+            //width
+            XUnit puzzleSpaceWidth = page.Width - 2 * MIN_PAGE_MARGIN;//max printable space for page
+            XUnit totalCharSpaceWidth = puzzleSpaceWidth - SPACE_BETWEEN_CHARS * (this.PuzzleWidth - 1);
+            XUnit maxCharWidth = totalCharSpaceWidth / this.PuzzleWidth;
+
+            //use smaller one to create a square for each char to fit the overall page size
+            XUnit squareSize = Math.Min(maxCharHeight, maxCharWidth);
+            double fontSize = squareSize.Point;
+
             //create graphics to draw
             XGraphics gfx = XGraphics.FromPdfPage(page);
-
-            //gute schriftarten: "Courier New", "Consolas", "Lucida Console"
-            XFont font = new XFont("Lucida Console", 18, XFontStyle.Bold);
+            //nice fonts: "Courier New", "Consolas", "Lucida Console"
+            XFont font = new XFont("Lucida Console", fontSize, XFontStyle.Bold);
             XTextFormatter tf = new XTextFormatter(gfx);
 
-            string puzzleText = this.PuzzleCharGrid.Textstring;
 
-            int margin = 30;
-            //draw text in pdf
-            tf.DrawString(puzzleText, font, XBrushes.Black,
-                new XRect(margin, margin, page.Width - margin, page.Height - margin),
-                XStringFormats.TopLeft);
-            //todo Anpassung der Schriftgröße an die eingegebenen CharGrid größe des erstellten Dokuments
+            //draw borders of puzzle
+            gfx.DrawRectangle(XPens.Black, MIN_PAGE_MARGIN, MIN_PAGE_MARGIN, squareSize * this.PuzzleWidth, squareSize * this.PuzzleHeight);//used size of the puzzle
+
+            //draw chars of grid
+            for (int y = 0; y < this.PuzzleHeight; y++)
+            {
+                for (int x = 0; x < this.PuzzleWidth; x++)
+                {
+                    double xCoord = MIN_PAGE_MARGIN + x * (squareSize + SPACE_BETWEEN_CHARS);
+                    double yCoord = MIN_PAGE_MARGIN + y * (squareSize + SPACE_BETWEEN_CHARS);
+
+                    tf.DrawString(this.PuzzleCharGrid.CharacterGrid[x, y].ToString(), font, XBrushes.Black,
+                        new XRect(xCoord, yCoord,
+                        maxCharWidth, maxCharHeight),
+                        XStringFormats.TopLeft);//todo center when implemented in lib
+                }
+            }
 
             //save to hard drive
-            doc.Save(fileName);
+            doc.Save(fileName);//todo abfangen, dass es von anderen prozess verwendet wird
         }
 
         /// <summary>
