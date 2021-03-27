@@ -1,4 +1,5 @@
-﻿using PdfSharpCore.Drawing;
+﻿using Microsoft.Win32;
+using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
 using PdfSharpCore.Pdf;
 using System;

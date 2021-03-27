@@ -1,4 +1,5 @@
-﻿using PdfSharpCore.Drawing;
+﻿using Microsoft.Win32;
+using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
 using PdfSharpCore.Pdf;
 using System;
@@ -90,27 +91,32 @@ namespace PuzzleMasterCore
             throw new NotImplementedException();
         }
 
-        private void CreatePDFButton_Click(object sender, RoutedEventArgs e)
+        private void CreatePDFPuzzle_Click(object sender, RoutedEventArgs e)
         {
-            const string filename = "puzzleDoc.pdf";
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF File (*.pdf)|*.pdf" + "|All Files | *.* ";
+            saveFileDialog.Title = "Export Puzzle as PDF-File";
+            saveFileDialog.FileName = "search_Puzzle.pdf";
 
-            PDFCreator pdfDrawer = new PDFCreator();
-            pdfDrawer.CreatePuzzlePdfFile(filename, SearchPuzzle);
-
-            MessageBox.Show("PDF-file created in \"" + filename + "\"!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                PDFCreator pdfDrawer = new PDFCreator();
+                pdfDrawer.CreatePuzzlePdfFile(saveFileDialog.FileName, SearchPuzzle);
+            }
         }
 
-        private void CreatePDFPuzzleAndSolution_Click(object sender, RoutedEventArgs e)
+        private void CreatePDFPuzzleSolution_Click(object sender, RoutedEventArgs e)
         {
-            const string puzzleFileName = "puzzleDoc.pdf";
-            const string solutionFileName = "solutionDoc.pdf";
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF File (*.pdf)|*.pdf" + "|All Files | *.* ";
+            saveFileDialog.Title = "Export Puzzle Solution as PDF-File";
+            saveFileDialog.FileName = "solution_Search_Puzzle.pdf";
 
-            PDFCreator pdfDrawer = new PDFCreator();
-            pdfDrawer.CreatePuzzlePdfFile(puzzleFileName, SearchPuzzle);
-
-            pdfDrawer.CreateSolutionPdfFile(solutionFileName, SearchPuzzle);
-
-            MessageBox.Show("PDF-files created in \"" + puzzleFileName + "\", \"" + solutionFileName + "\"!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                PDFCreator pdfDrawer = new PDFCreator();
+                pdfDrawer.CreateSolutionPdfFile(saveFileDialog.FileName, SearchPuzzle);
+            }
         }
     }
 
