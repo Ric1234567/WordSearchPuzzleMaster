@@ -5,6 +5,7 @@ using PdfSharpCore.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 
 namespace PuzzleMasterCore
 {
@@ -47,7 +48,14 @@ namespace PuzzleMasterCore
             DrawCharGrid(gfx, tf, charSize, searchPuzzle.PuzzleCharGrid, searchWordBoxHeight);
 
             //save to hard drive
-            pdfDoc.Save(fileName);//todo abfangen, dass es von anderen prozess verwendet wird
+            try
+            {
+                pdfDoc.Save(fileName);
+            }
+            catch (System.IO.IOException e)//catch used in another process exception
+            {
+                MessageBox.Show(e.Message, nameof(System.IO.IOException), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         public void CreateSolutionPdfFile(string fileName, SearchPuzzle searchPuzzle)
         {
@@ -69,7 +77,14 @@ namespace PuzzleMasterCore
             DrawCharGrid(gfx, tf, charSize, searchPuzzle.PuzzleSolution, MIN_PAGE_MARGIN);
 
             //save to hard drive
-            pdfDoc.Save(fileName);//todo abfangen, dass es von anderen prozess verwendet wird
+            try
+            {
+                pdfDoc.Save(fileName);
+            }
+            catch (System.IO.IOException e)//catch used in another process exception
+            {
+                MessageBox.Show(e.Message, nameof(System.IO.IOException), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private XUnit DrawSearchWordBox(XGraphics gfx, XTextFormatter tf, SearchPuzzle searchPuzzle, XUnit boxWidth)

@@ -62,8 +62,6 @@ namespace PuzzleMasterCore
             }
             else
             {
-                //MessageBox.Show(this.SearchPuzzle.PuzzleSolution.Textstring, WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.None);
-
                 PuzzleSolutionDialog.ShowNotification(WINDOW_NAME
                , this.SearchPuzzle.PuzzleSolution.Textstring);
             }
