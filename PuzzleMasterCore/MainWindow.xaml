@@ -22,7 +22,10 @@
                 <MenuItem Header="Generate Puzzle" Click="GenerateButton_Click"/>
                 <MenuItem Header="Spoiler Solution" Click="SpoilerButton_Click"/>
                 <Separator/>
-                <MenuItem Header="Create PDF-file" Click="CreatePDFButton_Click"/>
+                <MenuItem Header="Export">
+                    <MenuItem Header="PDF Puzzle" Click="CreatePDFButton_Click"/>
+                    <MenuItem Header="PDFs Puzzle and Solution" Click="CreatePDFPuzzleAndSolution_Click"/>
+                </MenuItem>
                 <MenuItem Header="Save Text" Click="MenuItemSaveText_Click"/>
                 <MenuItem Header="Save Solution" Click="MenuItemSaveSolution_Click"/>
                 <Separator/>

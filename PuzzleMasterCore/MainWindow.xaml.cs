@@ -94,9 +94,23 @@ namespace PuzzleMasterCore
         {
             const string filename = "puzzleDoc.pdf";
 
-            SearchPuzzle.CreatePDFFile(filename);
+            PDFCreator pdfDrawer = new PDFCreator();
+            pdfDrawer.CreatePuzzlePdfFile(filename, SearchPuzzle);
 
-            MessageBox.Show("PDF-file in \"" + filename + "\" created!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("PDF-file created in \"" + filename + "\"!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void CreatePDFPuzzleAndSolution_Click(object sender, RoutedEventArgs e)
+        {
+            const string puzzleFileName = "puzzleDoc.pdf";
+            const string solutionFileName = "solutionDoc.pdf";
+
+            PDFCreator pdfDrawer = new PDFCreator();
+            pdfDrawer.CreatePuzzlePdfFile(puzzleFileName, SearchPuzzle);
+
+            pdfDrawer.CreateSolutionPdfFile(solutionFileName, SearchPuzzle);
+
+            MessageBox.Show("PDF-files created in \"" + puzzleFileName + "\", \"" + solutionFileName + "\"!", WINDOW_NAME, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
