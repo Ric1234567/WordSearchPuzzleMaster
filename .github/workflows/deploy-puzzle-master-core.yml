@@ -3,7 +3,7 @@ name: "Deploy Puzzle Master"
 on:
   push:
     tags:
-      - "puzzle-master/v*"
+      - "puzzle-master-core/v*"
 
 env:
   PROJECT_PATH: PuzzleMasterCore/PuzzleMasterCore.csproj
@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-dotnetv1
+      - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
 
